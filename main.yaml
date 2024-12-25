@@ -3,9 +3,15 @@
   become: true
 
   tasks:
-    - name: update my machine
+    - name: check if machine is alredy updated or not
+      ansible.builtin.command:
+        cmd: apt-get -s upgrade
+      register: output
+      
+    - name:  update the machines if not updated already
       ansible.builtin.apt:
         update_cache: yes
+      when: output.failed == true  
 
     - name: make sure the packege openssl and openssh are up to date
       ansible.builtin.apt:
